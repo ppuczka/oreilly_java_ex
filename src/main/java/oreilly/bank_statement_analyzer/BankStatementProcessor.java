@@ -11,19 +11,19 @@ public class BankStatementProcessor {
         this.bankTransactions = bankTransactions;
     }
 
-    public Double calculateTotalBalance(List<BankTransaction> transactions) {
-        return transactions.stream().mapToDouble(t -> t.amount).sum();
+    public Double calculateTotalBalance() {
+        return this.bankTransactions.stream().mapToDouble(t -> t.amount).sum();
     }
 
-    public Double calculateTotalMonthlyBalance(List<BankTransaction> transactions, String selectedMonth) {
+    public Double calculateTotalMonthlyBalance(String selectedMonth) {
         Month month = Month.valueOf(selectedMonth.toUpperCase());
-        return transactions.stream()
+        return this.bankTransactions.stream()
                 .filter(t -> t.date.getMonth() == month)
                 .mapToDouble(c -> c.amount).sum();
     }
 
-    public Double calculateTotalForCategory(List<BankTransaction> transactions, String category) {
-        return transactions.stream()
+    public Double calculateTotalForCategory(String category) {
+        return this.bankTransactions.stream()
                 .filter(t -> t.description.equals(category))
                 .mapToDouble(c -> c.amount).sum();
     }

@@ -1,20 +1,22 @@
 package oreilly.bank_statement_analyzer;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class BankStatementAnalyzer {
 
-    public static void main(String[] args) {
-        String filename = "accounts.csv";
-        List<BankTransaction> transactions = BankStatementCVSParser.statementFileParser(filename);
-        BankStatementProcessor statementProcessor = new BankStatementProcessor(transactions);
+    private static final String RESOURCES = "src/main/resources/";
 
-        Double result = statementProcessor.calculateTotalBalance(transactions);
-        System.out.println(result);
-        Double monthlyResult = statementProcessor.calculateTotalMonthlyBalance(transactions, "January");
-        System.out.println(monthlyResult);
-        Double resultByCategory = statementProcessor.calculateTotalForCategory(transactions,"Cinema");
-        System.out.println(resultByCategory);
+    public void analyze(final String filename, final BankStatementParser bankStatementParser) throws IOException {
+        final Path path = Paths.get(RESOURCES + filename);
+        final List<String> lines = Files.readAllLines(path);
+        final List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
+        final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
+        System.out.println(bankStatementProcessor.calculateTotalBalance());
+        System.out.println(bankStatementProcessor.calculateTotalMonthlyBalance("January"));
+        System.out.println(bankStatementProcessor.calculateTotalForCategory("Cinema"));
     }
-
 }
