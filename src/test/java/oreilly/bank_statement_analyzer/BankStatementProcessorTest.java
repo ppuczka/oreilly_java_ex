@@ -1,6 +1,8 @@
 package oreilly.bank_statement_analyzer;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AssertionsKt;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -19,19 +21,26 @@ class BankStatementProcessorTest {
 
     @Test
     void shouldCalculateTotalBalance() {
-        Double resultExpected = 2970d;
+        final double resultExpected = 2970d;
         Assertions.assertEquals(resultExpected, processor.calculateTotalBalance(), tolerance);
     }
 
     @Test
     void shouldCalculateTotalMonthlyBalance() {
-        Double resultExpected = 2970d;
+        final double resultExpected = 2970d;
         Assertions.assertEquals(resultExpected, processor.calculateTotalMonthlyBalance(Month.FEBRUARY.toString()), tolerance);
     }
 
     @Test
     void shouldCalculateTotalForCategory() {
-        Double resultExpected = -30d;
+        final double resultExpected = -30d;
         Assertions.assertEquals(resultExpected, processor.calculateTotalForCategory("Cinema"), tolerance);
+    }
+
+    @Test
+    void shouldThrowRuntimeExceptionWhenFindingHighestTransaction() {
+        Assertions.assertThrows(RuntimeException.class, () -> processor.findHighestTransactionForSpecificDateRange(
+                LocalDate.of(2018, Month.MARCH, 1), LocalDate.of(2018, Month.MARCH, 1)));
+
     }
 }
