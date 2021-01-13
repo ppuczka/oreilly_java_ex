@@ -2,6 +2,7 @@ package oreilly.bank_statement_analyzer;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,27 +20,34 @@ public class BankStatementProcessor {
         return this.bankTransactions.stream().mapToDouble(t -> t.amount).sum();
     }
 
+    public Double summarizeTransactions(BankTransactionSummarizer bankTransactionSummarizer) {
+        double acc = 0d;
+        bankTransactions.forEach(bankTransaction -> bankTransactionSummarizer.summarize(acc, bankTransaction));
+        return acc;
+    }
+
+    public List<BankTransaction> findTransactions(BankTransactionFilter bankTransactionFilter) {
+        return bankTransactions.stream()
+                .filter(bankTransactionFilter::test).collect(Collectors.toList());
+    }
+
     public Double calculateTotalMonthlyBalance(String selectedMonth) {
         Month month = Month.valueOf(selectedMonth.toUpperCase());
-        return this.bankTransactions.stream()
-                .filter(t -> t.date.getMonth() == month)
-                .mapToDouble(c -> c.amount).sum();
+        return summarizeTransactions((accumulator, bankTransaction) ->
+                bankTransaction.getDate().getMonth() == month ? accumulator + bankTransaction.getAmount() : accumulator);
     }
 
     public Double calculateTotalForCategory(String category) {
-        return this.bankTransactions.stream()
-                .filter(t -> t.description.equals(category))
-                .mapToDouble(c -> c.amount).sum();
+        return summarizeTransactions((accumulator, bankTransaction) ->
+                bankTransaction.getDescription().equals(category) ? accumulator + bankTransaction.getAmount() : accumulator);
     }
 
     public Optional<BankTransaction> findHighestTransactionForSpecificDateRange(LocalDate from, LocalDate until) {
-        return bankTransactions.stream()
-                .filter(t -> t.date.isAfter(from) && t.date.isBefore(until))
-                .max(Comparator.comparingDouble(BankTransaction::getAmount));
+        return findTransactions(t -> t.date.isAfter(from) && t.date.isBefore(until))
+                .stream().max(Comparator.comparingDouble(BankTransaction::getAmount));
     }
 
-    public List<BankTransaction> findTransactionsGraterThanEqual(final BankTransactionFilter bankTransactionFilter) {
-        return bankTransactions.stream()
-                .filter(bankTransactionFilter::test).collect(Collectors.toList());
+    public List<BankTransaction> findTransactionsGraterThanEqual(final int amount) {
+        return findTransactions(bankTransaction -> bankTransaction.getAmount() >= amount);
     }
 }

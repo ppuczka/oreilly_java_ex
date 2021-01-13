@@ -27,7 +27,6 @@ public class BankStatementAnalyzer {
                         LocalDate.of(2017, Month.MARCH, 30))).get().orElseThrow(RuntimeException::new);
         System.out.println(result);
 
-        System.out.println(bankStatementProcessor.findTransactionsGraterThanEqual(bankTransaction ->
-            bankTransaction.getDate().getMonth() == Month.MARCH && bankTransaction.getAmount() >= 1000));
+        System.out.println(bankStatementProcessor.findTransactionsGraterThanEqual(1000));
     }
 }
