@@ -21,9 +21,13 @@ public class BankStatementAnalyzer {
         System.out.println(bankStatementProcessor.calculateTotalBalance());
         System.out.println(bankStatementProcessor.calculateTotalMonthlyBalance("January"));
         System.out.println(bankStatementProcessor.calculateTotalForCategory("Cinema"));
+
         BankTransaction result = Optional.of(bankStatementProcessor.
                 findHighestTransactionForSpecificDateRange(LocalDate.of(2017, Month.FEBRUARY, 1),
                         LocalDate.of(2017, Month.MARCH, 30))).get().orElseThrow(RuntimeException::new);
         System.out.println(result);
+
+        System.out.println(bankStatementProcessor.findTransactionsGraterThanEqual(bankTransaction ->
+            bankTransaction.getDate().getMonth() == Month.MARCH && bankTransaction.getAmount() >= 1000));
     }
 }

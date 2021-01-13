@@ -37,4 +37,9 @@ public class BankStatementProcessor {
                 .filter(t -> t.date.isAfter(from) && t.date.isBefore(until))
                 .max(Comparator.comparingDouble(BankTransaction::getAmount));
     }
+
+    public List<BankTransaction> findTransactionsGraterThanEqual(final BankTransactionFilter bankTransactionFilter) {
+        return bankTransactions.stream()
+                .filter(bankTransactionFilter::test).collect(Collectors.toList());
+    }
 }
