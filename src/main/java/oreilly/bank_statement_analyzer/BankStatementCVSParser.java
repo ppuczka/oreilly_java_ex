@@ -1,5 +1,7 @@
 package oreilly.bank_statement_analyzer;
 
+import oreilly.bank_statement_analyzer.utils.Notification;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
